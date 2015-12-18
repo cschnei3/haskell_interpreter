@@ -2,7 +2,7 @@ all:
 	bnfc FUN.cf
 	happy -gca ParFUN.y
 	alex -g LexFUN.x
-	ghc --make lab4.hs -o lab4
+	ghc --make Interpreter.hs lab4.hs -o lab4
 
 clean:
 	-rm -f lab4
