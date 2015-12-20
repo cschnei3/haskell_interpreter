@@ -18,7 +18,8 @@ check s = do
       putStrLn err
       exitFailure
     Ok  tree -> do
-      interpret tree
+      let y = interpret tree
+      exitFailure
 
 main :: IO ()
 main = do
