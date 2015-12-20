@@ -10,7 +10,7 @@ import ErrM
 
 import Interpreter
 
-check :: String -> IO ()
+check :: String -> String -> IO ()
 check s = do
   case pProgram (myLexer s) of
     Bad err  -> do
