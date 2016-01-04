@@ -4,22 +4,25 @@ import AbsFUN
 import ErrM
 import System.Environment (getArgs)
 import System.Exit (exitFailure)
-import LexFUN
+import qualified LexFUN 
 import ParFUN
 import ErrM
 
 import Interpreter
 
-check :: String -> String -> IO ()
+check :: String -> IO ()
 check s = do
   case pProgram (myLexer s) of
     Bad err  -> do
       putStrLn "SYNTAX ERROR"
       putStrLn err
       exitFailure
-    Ok  tree -> do
-      let y = interpret tree
-      exitFailure
+    Ok tree -> do
+      case interpret tree True of 
+        Res (EInt i, _) -> do putStrLn (show i)
+                              exitFailure
+        Err err -> do putStrLn err 
+                      exitFailure
 
 main :: IO ()
 main = do
