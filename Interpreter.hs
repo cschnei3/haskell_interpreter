@@ -4,12 +4,17 @@ import AbsFUN
 import ErrM
 import System.Exit (exitFailure)
 import PrintFUN
-import Debug.Trace (trace)
+--import Debug.Trace (trace)
 import Data.Map (Map, insert)
 import qualified Data.Map as Map
 import Data.List (find, findIndex, last, init)
 -- import Data.Int (Int)
 -- import qualified Data.Int as Int
+
+-- dummy function to restore referential transparency and hide logging
+-- when not debugging
+trace :: String -> a -> a
+trace a b = b
 
 data Result = Err String | Res (Exp, Environment)
 failure :: (Show a) => a -> Result
@@ -47,6 +52,10 @@ transExp x env = trace ("translating exp " ++ (show x)) $ case x of
                              EInt 0 -> transExp exp3 env
   EAbs id exp         -> failure "not implemented"
 
+--lambda :: Ident -> Exp -> Result 
+--lambda id exp = let
+
+
 transVar :: Ident -> Environment -> Result 
 transVar id env = case 
   do  varScope  <- find (Map.member id) (reverse $ vars env) 
@@ -79,12 +88,6 @@ fApply (EVar e1) e2 env = let
       Nothing           -> failure "Called non-existant function"
       Just (_, funExp)  -> let Res (res, appliedEnv) = transExp funExp newEnv
                            in Res (res, popScope appliedEnv)
-  {-in case (newEnv, funLookup) of 
-    (Nothing, _) -> failure "called non-existing function"
-    (_, Nothing) -> failure "called non-existing function"
-    (Just newEnv, Just (_, funExp)) ->  let Res (res, appliedEnv) = transExp funExp newEnv
-                                        in Res (res, popScope appliedEnv)
-    (_, _)    -> failure "fApply failed mysterously"-}
 
 fApply e1 e2 env = trace ("e1: " ++ (show e1) ++ " e2: " ++ (show e2)) failure "first expression of application must be an id"
   

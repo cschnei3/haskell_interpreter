@@ -10,17 +10,16 @@ import ErrM
 
 import Interpreter
 
-check :: String -> IO ()
-check s = do
+check :: Bool -> String -> IO ()
+check isCallByVal s = do
   case pProgram (myLexer s) of
     Bad err  -> do
       putStrLn "SYNTAX ERROR"
       putStrLn err
       exitFailure
     Ok tree -> do
-      case interpret tree True of 
+      case interpret tree isCallByVal of 
         Res (EInt i, _) -> do putStrLn (show i)
-                              exitFailure
         Err err -> do putStrLn err 
                       exitFailure
 
@@ -28,9 +27,14 @@ main :: IO ()
 main = do
   args <- getArgs
   case args of
-    [file] -> readFile file >>= check
+    [callMode, file] -> let 
+      isCallByVal = case callMode of 
+        "-v" -> True
+        "-n" -> False
+      in readFile file >>= (check isCallByVal)
+    [file] -> readFile file >>= (check True)
     _      -> do
-      putStrLn "Usage: lab4 <SourceFile>"
+      putStrLn "Usage: lab4 <SourceFile> [-n|-v]"
       exitFailure
   
 
