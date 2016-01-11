@@ -19,7 +19,7 @@ check isCallByVal s = do
       exitFailure
     Ok tree -> do
       case interpret tree isCallByVal of 
-        Res (EInt i, _) -> do putStrLn (show i)
+        Res (CExp (EInt i) _, _) -> do putStrLn (show i)
         Err err -> do putStrLn err 
                       exitFailure
 
