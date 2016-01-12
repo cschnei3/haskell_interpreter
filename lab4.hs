@@ -20,6 +20,8 @@ check isCallByVal s = do
     Ok tree -> do
       case interpret tree isCallByVal of 
         Res (CExp (EInt i) _, _) -> do putStrLn (show i)
+        Res (exp, _) -> do putStrLn "Error: Main must return Int"
+                           exitFailure
         Err err -> do putStrLn err 
                       exitFailure
 
